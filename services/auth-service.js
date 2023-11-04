@@ -13,7 +13,7 @@ module.exports = {
       if (isError) return res.json({ message: isError });
 
       const data = await dbConfig
-        .collectionConnection("Players")
+        .collectionConnection("Admin")
         .findOne({ phoneNumber: req.body.phoneNumber });
       if (data) {
         res.send({ message: "Player exists" });
@@ -45,7 +45,7 @@ module.exports = {
       if (isError) return res.json({ message: isError });
 
       const user = await dbConfig
-        .collectionConnection("Players")
+        .collectionConnection("Admin")
         .findOne({ phoneNumber: req.body.phoneNumber });
       if (user) {
         //comparing the encrypted password in db with the input password

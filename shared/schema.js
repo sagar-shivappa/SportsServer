@@ -30,4 +30,12 @@ module.exports = {
     category: joi.string().required(),
     gameStatus: joi.string().required(),
   }),
+  playerSchema: joi.object({
+    fullName: joi.string().required(),
+    age: joi.number().required(),
+    gender: joi.string().required(),
+    contactNumber: joi.number().required(),
+    cricket: joi.boolean().required(),
+    cricketPlayerType: joi.string(),
+  }),
 };
