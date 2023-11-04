@@ -25,8 +25,8 @@ module.exports = {
   gameSchema: joi.object({
     gameId: joi.string().required(),
     gameName: joi.string().required(),
-    owner:joi.array(),
-    rules:join.array(),
+    owner: joi.array(),
+    rules: joi.array(),
     category: joi.string().required(),
     gameStatus: joi.string().required(),
   }),
