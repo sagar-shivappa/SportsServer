@@ -10,22 +10,26 @@ module.exports = {
       const player = await dbConfig.collectionConnection("Players").findOne({
         fullName: req.body.fullName,
         contactNumber: req.body.contactNumber,
+        age: req.body.age,
       });
 
       if (player) {
         res.status(400).send({
-          message: `${req.body.fullName} has already Registered`,
+          message: `${req.body.fullName} has already been Registered`,
+          playerID: player.playerID,
           status: "Rejected",
         });
       } else {
         const playerID = await generatePlayerID(req.body);
+
         const Id = playerID[1].toUpperCase();
         const category = playerID[0];
+
         req.body.playerID = Id;
         req.body.category = category;
         await dbConfig.collectionConnection("Players").insertOne(req.body);
         res.status(200).send({
-          message: `Registered ${req.body.fullName}`,
+          message: `Congratulations! ${req.body.fullName.toUpperCase()} for successfully registering to ದೇವಾಂಗ ಕ್ರೀಡೋತ್ಸವ 2023`,
           playerID: Id,
           status: "Success",
         });
@@ -38,9 +42,10 @@ module.exports = {
     try {
       const player = await dbConfig
         .collectionConnection("Players")
-        .findOne({ playerID: req.params.playerID });
-
-      res.status(200).send(player);
+        .findOne({ playerID: req.params.playerID.toUpperCase() });
+      player
+        ? res.status(200).send(player)
+        : res.status(400).send({ message: "Invalid Player ID, please check" });
     } catch (error) {
       console.log(error);
     }
