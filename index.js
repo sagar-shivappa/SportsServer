@@ -1,7 +1,8 @@
 const express = require("express");
-const app = express();
+const cors = require("cors");
 const { config } = require("dotenv");
 
+const app = express();
 //Importing DB Config File
 const mongoConfig = require("./shared/mongo.config");
 
@@ -14,6 +15,7 @@ const { maintainance, tokenvalidation } = require("./middleware");
 
 // It is required to Parse our Request body from string to JSON
 app.use(express.json());
+app.use(cors());
 config();
 
 (async () => {

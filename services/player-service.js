@@ -6,11 +6,11 @@ module.exports = {
       // validate the data
       const isError = await validate(playerSchema, req.body);
       if (isError) return res.json({ message: isError });
-      const playerID = await generatePlayerID(req.body);
 
-      const player = await dbConfig
-        .collectionConnection("Players")
-        .findOne({ fullName: req.body.fullName });
+      const player = await dbConfig.collectionConnection("Players").findOne({
+        fullName: req.body.fullName,
+        contactNumber: req.body.contactNumber,
+      });
 
       if (player) {
         res.status(400).send({
@@ -18,11 +18,15 @@ module.exports = {
           status: "Rejected",
         });
       } else {
-        req.body.playerID = playerID;
+        const playerID = await generatePlayerID(req.body);
+        const Id = playerID[1].toUpperCase();
+        const category = playerID[0];
+        req.body.playerID = Id;
+        req.body.category = category;
         await dbConfig.collectionConnection("Players").insertOne(req.body);
         res.status(200).send({
           message: `Registered ${req.body.fullName}`,
-          playerID: playerID,
+          playerID: Id,
           status: "Success",
         });
       }
@@ -46,18 +50,20 @@ module.exports = {
 async function generatePlayerID(req) {
   const random = Math.floor(Math.random() * 100 + 1);
   const category = await getPlayerCategory(req.age, req.gender);
-  const playerID = `${category}-${req.fullName.slice(0, 2)}${random}`;
+  const playerID = [category, `${req.fullName.slice(0, 2)}${random}`];
   return playerID;
 }
 
 function getPlayerCategory(age, gender) {
-  if (age <= 8) return "K";
+  if (age <= 8) return "Kids";
 
-  if (age > 9 && age <= 12) return "C";
-  if (age > 12 && age <= 18) return "T";
-  if (age > 18 && age <= 39) return gender == "Male" ? "YM" : "YF";
-  if (age > 39 && age <= 59) return gender == "Male" ? "WM" : "WF";
-  if (age >= 60) return gender == "Male" ? "LM" : "LF";
+  if (age > 9 && age <= 12) return "Children";
+  if (age > 12 && age <= 18) return "Teens";
+  if (age > 18 && age <= 39)
+    return gender == "Male" ? "Youngster Male" : "Youngster Female";
+  if (age > 39 && age <= 59)
+    return gender == "Male" ? "Warrior Male " : "Warrior Female";
+  if (age >= 60) return gender == "Male" ? "Legends Male" : "Legends Female";
   else {
     return "UN";
   }

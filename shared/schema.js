@@ -35,7 +35,9 @@ module.exports = {
     age: joi.number().required(),
     gender: joi.string().required(),
     contactNumber: joi.number().required(),
-    cricket: joi.boolean().required(),
+    cricket: joi.string().required(),
     cricketPlayerType: joi.string(),
+    paymentType: joi.string().required(),
+    paymentStatus: joi.string().required(),
   }),
 };
